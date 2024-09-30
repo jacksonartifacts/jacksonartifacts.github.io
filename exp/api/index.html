@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Permission Requests Demo</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+  <div class="container mt-5">
+    <h1>Permission Requests</h1>
+    <div id="permissionResults" class="mt-3"></div>
+  </div>
+
+  <script>
+    async function requestPermissions() {
+      const permissions = ['microphone', 'notifications', 'geolocation', 'camera'];
+      const results = [];
+
+      for (const permission of permissions) {
+        try {
+          if (permission === 'microphone' || permission === 'camera') {
+            await navigator.mediaDevices.getUserMedia({ audio: permission === 'microphone', video: permission === 'camera' });
+            results.push(`${permission}: Granted`);
+          } else if (permission === 'geolocation') {
+            navigator.geolocation.getCurrentPosition(() => {
+              results.push('geolocation: Granted');
+            }, (error) => {
+              results.push(`geolocation: Denied - ${error.message}`);
+            });
+          } else if (permission === 'notifications') {
+            const status = await Notification.requestPermission();
+            results.push(`notifications: ${status}`);
+          }
+        } catch (error) {
+          results.push(`${permission}: Denied - ${error.message}`);
+        }
+      }
+
+      return results;
+    }
+
+    async function queryPermissions() {
+      const permissions = ['microphone', 'notifications', 'geolocation', 'camera'];
+      const results = [];
+
+      for (const permission of permissions) {
+        try {
+          const permissionStatus = await navigator.permissions.query({ name: permission });
+          results.push(`${permission}: ${permissionStatus.state}`);
+        } catch (error) {
+          results.push(`${permission}: Query Error - ${error.message}`);
+        }
+      }
+
+      return results;
+    }
+
+    function updateDOM(results) {
+      const permissionResultsDiv = document.getElementById('permissionResults');
+      permissionResultsDiv.innerHTML = results.map(result => `<p>${result}</p>`).join('');
+    }
+
+    async function requestAndQueryPermissions() {
+      const requestResults = await requestPermissions();
+      const queryResults = await queryPermissions();
+      updateDOM([...requestResults, ...queryResults]);
+    }
+
+    // Repeat permission requests and page refresh every second for 5 seconds
+    let refreshCount = 0;
+    const interval = setInterval(() => {
+      if (refreshCount >= 5) {
+        clearInterval(interval);
+      } else {
+        requestAndQueryPermissions();
+        location.reload(); // Refresh the page
+        refreshCount++;
+      }
+    }, 1000);
+  </script>
+</body>
+
+</html>
