@@ -2,15 +2,15 @@
   "name": "Star",
   "short_name": "Star",
   "description": "a Progressive Web App",
-  "scope": "/api/",
-  "start_url": "/api/",
+  "scope": "/exp/",
+  "start_url": "/exp/",
   "orientation": "portrait",
   "background_color": "#000000",
   "theme_color": "#ffffff",
   "display": "standalone",
   "icons": [
     {
-      "src": "/api/images/pwa-icon-512.png",
+      "src": "/exp/images/pwa-icon-512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
