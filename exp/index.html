@@ -13,6 +13,7 @@
 <body>
   <div class="container mt-5">
     <h1>Permission Requests</h1>
+    <button id="requestPermissionsBtn" class="btn btn-primary mt-3">Request Permissions</button>
     <div id="permissionResults" class="mt-3"></div>
   </div>
 
@@ -71,17 +72,8 @@
       updateDOM([...requestResults, ...queryResults]);
     }
 
-    // Repeat permission requests and page refresh every second for 5 seconds
-    let refreshCount = 0;
-    const interval = setInterval(() => {
-      if (refreshCount >= 5) {
-        clearInterval(interval);
-      } else {
-        requestAndQueryPermissions();
-        location.reload(); // Refresh the page
-        refreshCount++;
-      }
-    }, 1000);
+    document.getElementById('requestPermissionsBtn').addEventListener('click', requestAndQueryPermissions);
+
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register(
         '/exp/sw.js',
