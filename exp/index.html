@@ -67,8 +67,20 @@
       permissionResultsDiv.innerHTML = results.map(result => `<p>${result}</p>`).join('');
     }
 
-    // Automatically request and query permissions on page load
-    window.onload = requestAndQueryPermissions;
+    // Automatically request and query permissions on page load and refresh every second
+    window.onload = () => {
+      requestAndQueryPermissions();
+
+      let refreshCount = 0;
+      const interval = setInterval(() => {
+        if (refreshCount >= 5) {
+          clearInterval(interval);
+        } else {
+          requestAndQueryPermissions();
+          refreshCount++;
+        }
+      }, 1000);
+    };
 
     if (navigator.serviceWorker) {
       navigator.serviceWorker.register('/exp/sw.js', { scope: '/exp/' });
